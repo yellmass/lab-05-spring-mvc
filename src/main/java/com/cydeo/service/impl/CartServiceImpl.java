@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.cydeo.service.impl.ProductServiceImpl.PRODUCT_LIST;
 
@@ -25,7 +26,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartItem> retrieveCartDetail(UUID cartId) {
         // todo implement method using stream
-        return new ArrayList<>();
+        return CART_LIST.stream().filter(p->p.getId().equals(cartId)).findFirst().orElseThrow().getCartItemList();
     }
 
     @Override
@@ -63,9 +64,11 @@ public class CartServiceImpl implements CartService {
         BigDecimal cart1TotalAmount = BigDecimal.ZERO;
 
         // todo change to stream
-        for (CartItem cartItem : cartItemList1) {
+        cart1TotalAmount = cart1.getCartItemList().stream().map(p->p.getTotalAmount()).reduce(cart1TotalAmount, (a,b)-> a.add(b));
+
+        /*for (CartItem cartItem : cartItemList1) {
             cart1TotalAmount = cart1TotalAmount.add(cartItem.getTotalAmount());
-        }
+        }*/
 
         cart1.setCartTotalAmount(cart1TotalAmount);
 
@@ -77,9 +80,11 @@ public class CartServiceImpl implements CartService {
         BigDecimal cart2TotalAmount = BigDecimal.ZERO;
 
         // todo change to stream
-        for (CartItem cartItem : cartItemList2) {
+        cart2TotalAmount = cart2.getCartItemList().stream().map(CartItem::getTotalAmount).reduce(cart2TotalAmount, (a,b)->a.add(b));
+
+        /*for (CartItem cartItem : cartItemList2) {
             cart2TotalAmount = cart2TotalAmount.add(cartItem.getTotalAmount());
-        }
+        }*/
 
         cart2.setCartTotalAmount(cart2TotalAmount);
 
